@@ -33,9 +33,15 @@ def _validate(text):
 
 
 def _output_path():
-    base = os.environ.get("MAKEFUN_OUTPUT_DIR") or os.environ.get("OUTPUT_PATH")
-    if base:
-        return os.path.join(base, "entry.txt") if os.path.isdir(base) else base
+    # MAKEFUN_OUTPUT_DIR names a directory; OUTPUT_PATH names the file.
+    # The old version probed isdir() on MAKEFUN_OUTPUT_DIR, so a directory
+    # that did not exist yet was mistaken for a file path.
+    out_dir = os.environ.get("MAKEFUN_OUTPUT_DIR")
+    if out_dir:
+        return os.path.join(out_dir, "entry.txt")
+    path = os.environ.get("OUTPUT_PATH")
+    if path:
+        return path
     return "/output/entry.txt"
 
 
